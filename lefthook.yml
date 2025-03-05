@@ -45,3 +45,8 @@ pre-commit:
   parallel: true
   jobs:
     - run: ./gradlew ktlintCheck
+
+commit-msg:
+  parallel: true
+  jobs:
+    - run: npx commitlint --edit "$1"
