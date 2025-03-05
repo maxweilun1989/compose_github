@@ -23,7 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.andro.github.network.Repository
+import com.andro.github.data.Repository
 
 @Suppress("ktlint:standard:function-naming")
 @Composable

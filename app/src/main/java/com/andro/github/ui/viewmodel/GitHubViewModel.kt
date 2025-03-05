@@ -2,8 +2,8 @@ package com.andro.github.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.andro.github.network.GitHubApiService
-import com.andro.github.network.Repository
+import com.andro.github.data.Repository
+import com.andro.github.domain.GetRepositoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,20 +14,24 @@ import javax.inject.Inject
 class GitHubViewModel
     @Inject
     constructor(
-        private val gitHubApiService: GitHubApiService,
+        private val getRepositoriesUseCase: GetRepositoriesUseCase,
     ) : ViewModel() {
-        private val _repositories = MutableStateFlow<List<Repository>>(emptyList())
-        val repositories: StateFlow<List<Repository>> = _repositories
+        private val _uiState =
+            MutableStateFlow<RepositoryListUiState<List<Repository>>>(RepositoryListUiState.Loading)
+        val uiState: StateFlow<RepositoryListUiState<List<Repository>>> = _uiState
 
-        fun fetchPopularRepositories() {
+        fun fetchRepositories(language: String) {
+            _uiState.value = RepositoryListUiState.Loading
             viewModelScope.launch {
-                try {
-                    val response = gitHubApiService.getPopularRepositories(query = "programming")
-                    _repositories.value = response.items
-                } catch (e: Exception) {
-                    // 处理错误
-                    e.printStackTrace()
-                }
+                val result = getRepositoriesUseCase(language)
+                _uiState.value =
+                    if (result.isSuccess) {
+                        RepositoryListUiState.Success(result.getOrThrow())
+                    } else {
+                        RepositoryListUiState.Error(
+                            result.exceptionOrNull()?.message ?: "Unknown error",
+                        )
+                    }
             }
         }
     }

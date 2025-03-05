@@ -1,4 +1,4 @@
-package com.andro.github.ui.component.screens
+package com.andro.github.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.andro.github.network.Repository
+import com.andro.github.data.Repository
 
 @OptIn(ExperimentalLayoutApi::class)
 @Suppress("ktlint:standard:function-naming")
