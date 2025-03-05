@@ -45,6 +45,7 @@ pre-commit:
   parallel: true
   jobs:
     - run: ./gradlew ktlintCheck
+      glob: "*.{kt,kts}"
 
 commit-msg:
   parallel: true
