@@ -52,10 +52,19 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.android.lifecycle.viewmodel)
+    implementation(libs.kotlinx.coroutines.android)
 
     // for hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    // for network and json
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.moshi)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.log)
+    implementation(libs.moshi)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
