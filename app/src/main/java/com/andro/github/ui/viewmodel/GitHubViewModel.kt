@@ -1,4 +1,4 @@
-package com.andro.github.ui
+package com.andro.github.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,7 +22,7 @@ class GitHubViewModel
         fun fetchPopularRepositories() {
             viewModelScope.launch {
                 try {
-                    val response = gitHubApiService.getPopularRepositories()
+                    val response = gitHubApiService.getPopularRepositories(query = "programming")
                     _repositories.value = response.items
                 } catch (e: Exception) {
                     // 处理错误

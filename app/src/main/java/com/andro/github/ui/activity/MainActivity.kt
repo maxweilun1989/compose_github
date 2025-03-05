@@ -5,15 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.andro.github.network.Repository
-import com.andro.github.ui.GitHubViewModel
+import androidx.compose.ui.Modifier
+import com.andro.github.ui.component.RepositoryList
 import com.andro.github.ui.theme.GithubTheme
+import com.andro.github.ui.viewmodel.GitHubViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,24 +25,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GithubTheme {
-                setContent {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .systemBarsPadding(),
+                ) {
                     val repositories by viewModel.repositories.collectAsState()
-
                     viewModel.fetchPopularRepositories()
-
                     RepositoryList(repositories)
                 }
             }
-        }
-    }
-}
-
-@Suppress("ktlint:standard:function-naming")
-@Composable
-fun RepositoryList(repositories: List<Repository>) {
-    LazyColumn {
-        items(repositories) { repo ->
-            Text(text = "${repo.name} - 🌟 ${repo.stars}")
         }
     }
 }
