@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            GithubTheme {
+            GithubTheme(dynamicColor = false) {
                 Surface(
                     modifier =
                         Modifier
