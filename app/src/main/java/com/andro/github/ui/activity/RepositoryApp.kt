@@ -52,6 +52,7 @@ import com.andro.github.app.AppConfig
 import com.andro.github.data.GitHubUser
 import com.andro.github.data.Repository
 import com.andro.github.ui.screens.LoginScreen
+import com.andro.github.ui.screens.ProfileScreen
 import com.andro.github.ui.screens.RepoListErrorScreen
 import com.andro.github.ui.screens.RepoListLoadingScreen
 import com.andro.github.ui.screens.RepositoryDetailScreen
@@ -110,6 +111,7 @@ fun RepositoryApp(
                 uiState,
                 viewModel,
                 language,
+                user,
                 padding,
                 onOAuthLogin,
                 onLogin,
@@ -125,6 +127,7 @@ private fun AppNavigation(
     uiState: RepositoryListUiState<List<Repository>>,
     viewModel: GitHubViewModel,
     language: String,
+    user: GitHubUser?,
     padding: PaddingValues,
     onOAuthLogin: () -> Unit,
     onLogin: (String, String) -> Unit,
@@ -153,6 +156,10 @@ private fun AppNavigation(
                 navController.popBackStack()
                 onOAuthLogin()
             }
+        }
+
+        composable(AppConfig.ROUTER_PROFILE) {
+            ProfileScreen(user)
         }
 
         composable(AppConfig.ROUTE_REPOSITORY_LIST) {
@@ -267,11 +274,16 @@ fun DrawerContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            DrawerOption(
-                icon = Icons.Default.Info,
-                label = "关于",
-                onClick = { /* TODO: 跳转到关于页面 */ },
-            )
+            if (user != null) {
+                DrawerOption(
+                    icon = Icons.Default.Info,
+                    label = "关于",
+                    onClick = {
+                        closeDrawer()
+                        navController.navigate(AppConfig.ROUTER_PROFILE)
+                    },
+                )
+            }
         }
     }
 }
