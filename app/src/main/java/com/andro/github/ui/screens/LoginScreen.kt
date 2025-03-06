@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -54,7 +55,6 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
                     .padding(bottom = 16.dp),
         )
 
-        // 密码输入框
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -75,7 +75,7 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
 
         Button(
             onClick = { onLoginClick(username, password) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("LoginButton"),
         ) {
             Text(text = "Login")
         }

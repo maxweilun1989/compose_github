@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -239,11 +238,6 @@ fun DrawerContent(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            DrawerOption(
-                icon = Icons.Default.Settings,
-                label = "设置",
-                onClick = { /* TODO: 跳转到设置页面 */ },
-            )
 
             DrawerOption(
                 icon = Icons.Default.Info,
