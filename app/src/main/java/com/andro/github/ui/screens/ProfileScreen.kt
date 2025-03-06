@@ -16,11 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,12 +38,14 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.andro.github.data.GitHubUser
 import com.andro.github.data.Repository
+import androidx.compose.runtime.remember as remember1
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ProfileScreen(
     user: GitHubUser?,
     repos: List<Repository>,
+    onRaiseIssue: (user: GitHubUser?, repo: String, title: String, content: String) -> Unit,
 ) {
     if (user == null) {
         Column(
@@ -55,11 +61,19 @@ fun ProfileScreen(
                 text = "User not found",
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
             )
         }
         return
     }
+    val (showDialog, setShowDialog) = remember1 { mutableStateOf(false) }
+    val (dialogRepoName, setDialogRepoName) = remember1 { mutableStateOf("") }
+    val (dialogTitle, setDialogTitle) = remember1 { mutableStateOf("") }
+    val (dialogContent, setDialogContent) = remember1 { mutableStateOf("") }
+
     Column(
         modifier =
             Modifier
@@ -73,7 +87,7 @@ fun ProfileScreen(
                 ImageRequest
                     .Builder(LocalContext.current)
                     .data(user.avatarUrl)
-                    .crossfade(true) // 加载图片时的淡入效果
+                    .crossfade(true)
                     .build(),
             contentDescription = "User Avatar",
             modifier =
@@ -120,8 +134,60 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(repos) { repo ->
-                RepoCard(repo = repo)
+                RepoCard(repo = repo) { repo ->
+                    setDialogRepoName(repo.name)
+                    setShowDialog(true)
+                }
             }
+        }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { setShowDialog(false) },
+                title = {
+                    Text(text = "Raise Issue - $dialogRepoName")
+                },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = dialogTitle,
+                            onValueChange = { setDialogTitle(it) },
+                            label = { Text("Title") },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = dialogContent,
+                            onValueChange = { setDialogContent(it) },
+                            label = { Text("Content") },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onRaiseIssue(user, dialogRepoName, dialogTitle, dialogContent)
+                            setShowDialog(false)
+                            setDialogContent("")
+                            setDialogTitle("")
+                        },
+                    ) {
+                        Text("Submit")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            setShowDialog(false)
+                            setDialogContent("")
+                            setDialogTitle("")
+                        },
+                    ) {
+                        Text("Cancel")
+                    }
+                },
+            )
         }
     }
 }
@@ -165,7 +231,10 @@ fun InfoCard(
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun RepoCard(repo: Repository) {
+fun RepoCard(
+    repo: Repository,
+    onRaiseClick: (Repository) -> Unit,
+) {
     Card(
         modifier =
             Modifier
@@ -175,23 +244,37 @@ fun RepoCard(repo: Repository) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
-        Column(
+        Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = repo.name,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            )
-            if (!repo.description.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+            ) {
                 Text(
-                    text = repo.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = repo.name,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 )
+                if (!repo.description.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = repo.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            Button(
+                onClick = { onRaiseClick(repo) },
+                modifier =
+                    Modifier
+                        .padding(start = 16.dp),
+            ) {
+                Text(text = "Raise")
             }
         }
     }

@@ -2,8 +2,10 @@ package com.andro.github.data
 
 import android.content.SharedPreferences
 import com.andro.github.app.AppConfig
+import com.andro.github.network.CreateIssueRequest
 import com.andro.github.network.GitHubApiService
 import com.andro.github.network.GitHubAuthService
+import com.andro.github.network.IssueResponse
 import javax.inject.Inject
 
 class AccountRepositoryImpl
@@ -26,6 +28,20 @@ class AccountRepositoryImpl
         override suspend fun getUserInfo(accessToken: String): GitHubUser = githubAPiService.getUserInfo("Bearer $accessToken")
 
         override suspend fun getUserRepos(accessToken: String): List<Repository> = githubAPiService.fetchOwnRepos("Bearer $accessToken")
+
+        override suspend fun createIssue(
+            accessToken: String,
+            owner: String,
+            repo: String,
+            title: String,
+            body: String?,
+        ): IssueResponse =
+            githubAPiService.createIssue(
+                token = "Bearer $accessToken",
+                owner = owner,
+                repo = repo,
+                issueRequest = CreateIssueRequest(title, body),
+            )
 
         override fun saveAccessToken(accessToken: String) {
             sharedPreferences

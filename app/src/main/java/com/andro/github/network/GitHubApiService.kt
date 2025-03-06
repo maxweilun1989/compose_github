@@ -2,8 +2,11 @@ package com.andro.github.network
 
 import com.andro.github.data.GitHubUser
 import com.andro.github.data.Repository
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 const val REPO_PER_PAGE = 10
@@ -26,4 +29,28 @@ interface GitHubApiService {
     suspend fun fetchOwnRepos(
         @Header("Authorization") authorization: String,
     ): List<Repository>
+
+    @POST("repos/{owner}/{repo}/issues")
+    suspend fun createIssue(
+        @Header("Authorization") token: String,
+        @Header("Accept") accept: String = "application/vnd.github+json",
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+        @Body issueRequest: CreateIssueRequest,
+    ): IssueResponse
 }
+
+data class CreateIssueRequest(
+    val title: String,
+    val body: String? = null,
+    val assignees: List<String>? = null,
+    val labels: List<String>? = null,
+)
+
+data class IssueResponse(
+    val id: Int,
+    val title: String,
+    val body: String?,
+    val state: String,
+    val htmlUrl: String,
+)

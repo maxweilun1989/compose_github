@@ -170,7 +170,9 @@ private fun AppNavigation(
         }
 
         composable(AppConfig.ROUTER_PROFILE) {
-            ProfileScreen(user, currentUserRepos)
+            ProfileScreen(user, currentUserRepos) { user, repo, title, content ->
+                viewModel.raiseIssue(user, repo, title, content)
+            }
         }
 
         composable(AppConfig.ROUTE_REPOSITORY_LIST) {

@@ -14,6 +14,7 @@ import com.andro.github.data.Repository
 import com.andro.github.domain.GetGitHubUseInfoCase
 import com.andro.github.domain.GetRepositoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -53,6 +54,9 @@ class GitHubViewModel
 
         private val _currentUserRepos = MutableStateFlow<List<Repository>>(emptyList())
         val currentUserRepos: StateFlow<List<Repository>> = _currentUserRepos
+
+        private val _issueCreateResult = MutableSharedFlow<String>()
+        val issueCreateResult = _issueCreateResult
 
         fun fetchLoginState() {
             scope.launch {
@@ -148,6 +152,38 @@ class GitHubViewModel
                     _currentUserRepos.value = accountRepository.getUserRepos(token)
                 }.onFailure {
                     _currentUserRepos.value = emptyList()
+                }
+            }
+        }
+
+        fun raiseIssue(
+            user: GitHubUser?,
+            repo: String,
+            title: String,
+            content: String,
+        ) {
+            if (user == null) {
+                Log.e(TAG, "user is null")
+                return
+            }
+            if (title == null) {
+                Log.e(TAG, "title is null")
+                return
+            }
+            scope.launch {
+                val token = accountRepository.getSavedAccessToken()
+                if (token.isNullOrBlank()) {
+                    Log.e(TAG, "fetchOwnRepos: Access token is null or blank")
+                    return@launch
+                }
+                runCatching {
+                    accountRepository.createIssue(token, user.login, repo, title, content)
+                }.onFailure {
+                    Log.e(TAG, "raiseIssue: ${it.message}")
+                    _issueCreateResult.emit("Error: ${it.message}")
+                }.onSuccess { issue ->
+                    Log.d(TAG, "raiseIssue: Issue created State: $issue")
+                    _issueCreateResult.emit("Issue created State: ${issue.state}")
                 }
             }
         }
