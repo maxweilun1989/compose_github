@@ -206,15 +206,23 @@ private fun AppNavigation(
         }
     }
 
-    val destination =
-        when (uiState) {
-            is RepositoryListUiState.Error -> AppConfig.ROUTER_ERROR
-            RepositoryListUiState.Loading -> AppConfig.ROUTER_LOADING
-            is RepositoryListUiState.Success -> AppConfig.ROUTE_REPOSITORY_LIST
-        }
-    navController.navigate(destination) {
-        popUpTo(navController.graph.id) {
-            inclusive = true
+    if (navController.currentDestination?.route in
+        listOf(
+            AppConfig.ROUTER_LOADING,
+            AppConfig.ROUTER_ERROR,
+            AppConfig.ROUTE_REPOSITORY_LIST,
+        )
+    ) {
+        val destination =
+            when (uiState) {
+                is RepositoryListUiState.Error -> AppConfig.ROUTER_ERROR
+                RepositoryListUiState.Loading -> AppConfig.ROUTER_LOADING
+                is RepositoryListUiState.Success -> AppConfig.ROUTE_REPOSITORY_LIST
+            }
+        navController.navigate(destination) {
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
         }
     }
 }
