@@ -13,12 +13,12 @@ https://github.com/maxweilun1989/compose_github/blob/main/app/release/app-releas
 5. View Current login user's profile.
 6. Remember user Login State.
 7. Screen rotated supported.
+8. Raise issues for authentical user( has a bug raise issue return 403[https://github.com/maxweilun1989/compose_github/issues/1])
 
 ## Not Supported yet.
-1. Raise issues for authentical user(need list all the repos in the profile page, and another screen to fill the issue info)
-2. Repo List page should supprt load more.
-3. Fetch all the supported lanuages from github server, not hardcoded.
-4. Repo list page should support pull down to refresh.
+1. Repo List page should supprt load more.
+2. Fetch all the supported lanuages from github server, not hardcoded.
+3. Repo list page should support pull down to refresh.
 
 # Arch
 
