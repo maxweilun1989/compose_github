@@ -1,8 +1,10 @@
 package com.andro.github
 
 import app.cash.turbine.test
+import com.andro.github.common.FakeAccountRepo
+import com.andro.github.common.FakeGetGitHubUseInfoCase
+import com.andro.github.common.FakeGetReposErrorUserCase
 import com.andro.github.common.TestCoroutineScopeProvider
-import com.andro.github.di.FakeGetReposErrorUserCase
 import com.andro.github.ui.viewmodel.GitHubViewModel
 import com.andro.github.ui.viewmodel.RepositoryListUiState
 import junit.framework.TestCase.assertEquals
@@ -20,7 +22,13 @@ class GitHubViewModelTest {
     fun setUp() {
         testCoroutineScopeProvider = TestCoroutineScopeProvider()
         fakeUseCase = FakeGetReposErrorUserCase()
-        viewModel = GitHubViewModel(fakeUseCase, testCoroutineScopeProvider)
+        viewModel =
+            GitHubViewModel(
+                fakeUseCase,
+                FakeGetGitHubUseInfoCase(),
+                testCoroutineScopeProvider,
+                FakeAccountRepo(),
+            )
     }
 
     @Test

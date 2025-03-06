@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.andro.github.app.AppConfig
 import com.andro.github.common.CoroutineScopeProvider
+import com.andro.github.data.AccountRepository
 import com.andro.github.data.GitHubUser
 import com.andro.github.data.Repository
 import com.andro.github.domain.GetGitHubUseInfoCase
@@ -25,6 +26,7 @@ class GitHubViewModel
         private val getRepositoriesUseCase: GetRepositoriesUseCase,
         private val getGitHubUseInfoCase: GetGitHubUseInfoCase,
         private val scopeProvider: CoroutineScopeProvider,
+        private val accountRepository: AccountRepository,
     ) : ViewModel() {
         companion object {
             const val TAG = "[GitHubViewModel]"
@@ -48,6 +50,24 @@ class GitHubViewModel
 
         private val _githubUser = MutableStateFlow<GitHubUser?>(null)
         val githubUser: StateFlow<GitHubUser?> = _githubUser
+
+        fun fetchLoginState() {
+            scope.launch {
+                val accessToken = accountRepository.getSavedAccessToken()
+                if (!accessToken.isNullOrBlank()) {
+                    kotlin
+                        .runCatching {
+                            accountRepository.getUserInfo(accessToken)
+                        }.onSuccess { user ->
+                            _githubUser.value = user
+                        }.onFailure {
+                            Log.e(TAG, "Error: ${it.message}")
+                            accountRepository.removeSavedAccessToken()
+                            _githubUser.value = null
+                        }
+                }
+            }
+        }
 
         fun fetchRepositories() {
             resetListState()

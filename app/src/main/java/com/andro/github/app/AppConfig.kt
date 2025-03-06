@@ -28,6 +28,7 @@ object AppConfig {
 
     const val CLIENT_SECRETS = "19e027173588092de2a6b022539a9ee3e94d99ca"
     const val CLIENT_ID = "Iv23liUcbd4F4mVIacoA"
+    const val KEY_ACCESS_TOKEN = "github_access_token"
 
     const val REDIRECT_URI = "andro://githubredirect"
     const val AUTH_URL = "https://github.com/login/oauth/authorize"

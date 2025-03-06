@@ -82,6 +82,7 @@ fun RepositoryApp(
     }
 
     LaunchedEffect(Unit) {
+        viewModel.fetchLoginState()
         viewModel.fetchRepositories()
     }
 

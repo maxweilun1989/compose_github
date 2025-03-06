@@ -21,9 +21,11 @@ class GetGitHubUseInfoCaseImpl
                     if (accessToken.isEmpty()) {
                         throw IllegalStateException("Access token isempty")
                     }
+                    accountRepository.saveAccessToken(accessToken)
                     val gitHubUser = accountRepository.getUserInfo(accessToken)
                     return@runCatching gitHubUser
                 }.onFailure {
                     Log.e(TAG, "Error: ${it.message}")
+                    accountRepository.removeSavedAccessToken()
                 }
     }

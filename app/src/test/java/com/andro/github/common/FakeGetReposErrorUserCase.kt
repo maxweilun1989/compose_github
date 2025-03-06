@@ -1,4 +1,4 @@
-package com.andro.github.di
+package com.andro.github.common
 
 import com.andro.github.data.Owner
 import com.andro.github.data.Repository
