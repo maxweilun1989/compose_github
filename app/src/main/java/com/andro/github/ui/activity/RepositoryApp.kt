@@ -61,7 +61,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun RepositoryApp(viewModel: GitHubViewModel) {
+fun RepositoryApp(
+    viewModel: GitHubViewModel,
+    onOAuthLogin: () -> Unit,
+    onLogin: (String, String) -> Unit,
+) {
     val uiState by viewModel.uiState.collectAsState()
     val language by viewModel.language.collectAsState()
 
@@ -98,7 +102,15 @@ fun RepositoryApp(viewModel: GitHubViewModel) {
                 )
             },
         ) { padding ->
-            AppNavigation(navController, uiState, viewModel, language, padding)
+            AppNavigation(
+                navController,
+                uiState,
+                viewModel,
+                language,
+                padding,
+                onOAuthLogin,
+                onLogin,
+            )
         }
     }
 }
@@ -111,6 +123,8 @@ private fun AppNavigation(
     viewModel: GitHubViewModel,
     language: String,
     padding: PaddingValues,
+    onOAuthLogin: () -> Unit,
+    onLogin: (String, String) -> Unit,
 ) {
     NavHost(
         modifier = Modifier.padding(padding),
@@ -132,7 +146,8 @@ private fun AppNavigation(
         }
 
         composable(AppConfig.ROUTER_LOGIN) {
-            LoginScreen { name, password ->
+            LoginScreen(onLogin) {
+                onOAuthLogin()
             }
         }
 

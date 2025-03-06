@@ -60,6 +60,7 @@ dependencies {
 
     // for hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.browser)
     kapt(libs.hilt.android.compiler)
 
     // for network and json

@@ -1,5 +1,6 @@
 package com.andro.github.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,7 +28,10 @@ import androidx.compose.ui.unit.dp
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun LoginScreen(onLoginClick: (String, String) -> Unit) {
+fun LoginScreen(
+    onLoginButtonClick: (String, String) -> Unit,
+    OnOAuthClick: () -> Unit,
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -74,10 +79,22 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
         )
 
         Button(
-            onClick = { onLoginClick(username, password) },
+            onClick = { onLoginButtonClick(username, password) },
             modifier = Modifier.fillMaxWidth().testTag("LoginButton"),
         ) {
             Text(text = "Login")
         }
+
+        // add a link to oauth login
+        Text(
+            text = "OAuth2 Login",
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+                    .clickable(onClick = OnOAuthClick),
+            color = Color.Blue,
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }

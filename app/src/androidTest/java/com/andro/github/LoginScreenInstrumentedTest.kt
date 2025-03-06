@@ -25,10 +25,10 @@ class LoginScreenInstrumentedTest {
         var passwordInput = ""
 
         composeTestRule.activity.setContent {
-            LoginScreen { username, password ->
+            LoginScreen({ username, password ->
                 usernameInput = username
                 passwordInput = password
-            }
+            }) {}
         }
 
         composeTestRule.onNodeWithText("Username").assertExists()
@@ -52,7 +52,7 @@ class LoginScreenInstrumentedTest {
     @Test
     fun testPasswordVisibilityToggle() {
         composeTestRule.activity.setContent {
-            LoginScreen { _, _ -> }
+            LoginScreen({ _, _ -> }) {}
         }
 
         composeTestRule.onNodeWithText("Password").assertExists()
@@ -71,5 +71,20 @@ class LoginScreenInstrumentedTest {
         composeTestRule.onNodeWithText("🙈").performClick()
         composeTestRule.onNodeWithText("testPass").assertDoesNotExist()
         composeTestRule.onNodeWithText("••••••••").assertExists()
+    }
+
+    @Test
+    fun testOAthLinkClick() {
+        var clicked = false
+        val oauthLink = "OAuth2 Login"
+        composeTestRule.activity.setContent {
+            LoginScreen({ _, _ -> }) {
+                clicked = true
+            }
+        }
+        composeTestRule.onNodeWithText(oauthLink).assertExists()
+        composeTestRule.onNodeWithText(oauthLink).performClick()
+
+        assert(clicked)
     }
 }
