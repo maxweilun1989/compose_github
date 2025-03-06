@@ -18,6 +18,10 @@ https://www.bilibili.com/video/BV1g3RNYVErm/?vd_source=c1787d85bea9b3113f619d0d7
 3. Fetch all the supported lanuages from github server, not hardcoded.
 4. Repo list page should support pull down to refresh.
 
+# Arch
+
+Basically, we adapte the architecture that google recommended. [Layer Architecture](https://developer.android.com/topic/architecture/recommendations). There is a simple illustration diagram below.
+![image](https://github.com/user-attachments/assets/a918c81f-c820-4ab6-944f-c5e7fd79d9ad)
 
 # Some Teck debts.
 1. Should not store APPID and APP_SECRET in source code. Maybe should try [keystore](https://developer.android.com/privacy-and-security/keystore).
@@ -31,6 +35,7 @@ https://www.bilibili.com/video/BV1g3RNYVErm/?vd_source=c1787d85bea9b3113f619d0d7
 * StateFlow/Coroutine
 * LifecycleScope
 * Compose
+* Hilt
 
 ## third-part library
 * [Coil](https://github.com/coil-kt/coil) for dispaly async image.
