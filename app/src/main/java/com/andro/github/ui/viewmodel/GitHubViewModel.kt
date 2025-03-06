@@ -1,6 +1,11 @@
 package com.andro.github.ui.viewmodel
 
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.andro.github.app.AppConfig
 import com.andro.github.common.CoroutineScopeProvider
 import com.andro.github.data.Repository
 import com.andro.github.domain.GetRepositoriesUseCase
@@ -18,14 +23,22 @@ class GitHubViewModel
         private val scopeProvider: CoroutineScopeProvider,
     ) : ViewModel() {
         private val scope = scopeProvider.getScope(this)
+
         private val _uiState =
             MutableStateFlow<RepositoryListUiState<List<Repository>>>(RepositoryListUiState.Loading)
         val uiState: StateFlow<RepositoryListUiState<List<Repository>>> = _uiState
 
-        fun fetchRepositories(language: String) {
+        private val _language = MutableStateFlow(AppConfig.DEFAULT_LANGUAGE)
+        val language: StateFlow<String> = _language
+
+        // for lazyColumn scroll position
+        var llState: LazyListState by mutableStateOf(LazyListState(0, 0))
+
+        fun fetchRepositories() {
+            resetListState()
             _uiState.value = RepositoryListUiState.Loading
             scope.launch {
-                val result = getRepositoriesUseCase.execute(language)
+                val result = getRepositoriesUseCase.execute(language.value)
                 _uiState.value =
                     if (result.isSuccess) {
                         RepositoryListUiState.Success(result.getOrThrow())
@@ -35,5 +48,14 @@ class GitHubViewModel
                         )
                     }
             }
+        }
+
+        fun setLanguage(newLanguage: String) {
+            _language.value = newLanguage
+            fetchRepositories()
+        }
+
+        private fun resetListState() {
+            llState = LazyListState(0, 0)
         }
     }

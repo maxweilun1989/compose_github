@@ -28,7 +28,7 @@ class GitHubViewModelTest {
         testCoroutineScopeProvider.getTestScope().runTest {
             viewModel.uiState.test {
                 fakeUseCase.setReturnError(false)
-                viewModel.fetchRepositories("Kotlin")
+                viewModel.fetchRepositories()
 
                 assertTrue(awaitItem() is RepositoryListUiState.Loading)
 
@@ -43,7 +43,7 @@ class GitHubViewModelTest {
         testCoroutineScopeProvider.getTestScope().runTest {
             viewModel.uiState.test {
                 fakeUseCase.setReturnError(true)
-                viewModel.fetchRepositories("Kotlin")
+                viewModel.fetchRepositories()
 
                 assertTrue(awaitItem() is RepositoryListUiState.Loading)
 
@@ -57,7 +57,7 @@ class GitHubViewModelTest {
     fun `fetchRepositories returns success`(): Unit =
         testCoroutineScopeProvider.getTestScope().runTest {
             fakeUseCase.setReturnError(false)
-            viewModel.fetchRepositories("Kotlin")
+            viewModel.fetchRepositories()
 
             val uiState = viewModel.uiState.value
             assertTrue(uiState is RepositoryListUiState.Success)
@@ -79,10 +79,45 @@ class GitHubViewModelTest {
         testCoroutineScopeProvider.getTestScope().runTest {
             fakeUseCase.setReturnError(true)
 
-            viewModel.fetchRepositories("Kotlin")
+            viewModel.fetchRepositories()
 
             val uiState = viewModel.uiState.value
             assertTrue(uiState is RepositoryListUiState.Error)
             assertEquals("Test error", (uiState as RepositoryListUiState.Error).message)
+        }
+
+    @Test
+    fun `fetchRepositories should reset list state`() =
+        testCoroutineScopeProvider.getTestScope().run {
+            fakeUseCase.setReturnError(false)
+            viewModel.fetchRepositories()
+
+            val uiState = viewModel.uiState.value
+            assertTrue(uiState is RepositoryListUiState.Success)
+            assertEquals(0, viewModel.llState.firstVisibleItemIndex)
+            assertEquals(0, viewModel.llState.firstVisibleItemScrollOffset)
+        }
+
+    @Test
+    fun `setLanguage should show loading first`(): Unit =
+        testCoroutineScopeProvider.getTestScope().runTest {
+            viewModel.uiState.test {
+                fakeUseCase.setReturnError(false)
+                viewModel.setLanguage("Java")
+
+                assertTrue(awaitItem() is RepositoryListUiState.Loading)
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `setLanguage updates language and fetches repositories`(): Unit =
+        testCoroutineScopeProvider.getTestScope().runTest {
+            fakeUseCase.setReturnError(false)
+            viewModel.setLanguage("Java")
+
+            val uiState = viewModel.uiState.value
+            assertTrue(uiState is RepositoryListUiState.Success)
+            assertEquals("Java", viewModel.language.value)
         }
 }

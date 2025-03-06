@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,12 +18,12 @@ import com.andro.github.ui.viewmodel.RepositoryListUiState
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun RepositoryApp(viewModel: GitHubViewModel) {
-    val language = "kotlin"
     val uiState by viewModel.uiState.collectAsState()
+    val language by viewModel.language.collectAsState()
     val navController = rememberNavController()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchRepositories(language)
+        viewModel.fetchRepositories()
     }
 
     NavHost(
@@ -38,7 +39,7 @@ fun RepositoryApp(viewModel: GitHubViewModel) {
             if (error != null) {
                 RepoListErrorScreen(
                     message = error.message,
-                    onRetry = { viewModel.fetchRepositories(language) },
+                    onRetry = { viewModel.fetchRepositories() },
                 )
             }
         }
@@ -48,6 +49,11 @@ fun RepositoryApp(viewModel: GitHubViewModel) {
             if (success != null) {
                 RepositoryListScreen(
                     repositories = success.data,
+                    language = language,
+                    listState = viewModel.llState,
+                    onLanguageChange = { newLanguage ->
+                        viewModel.setLanguage(newLanguage)
+                    },
                     onRepositoryClick = { repository ->
                         navController.navigate("repository_detail/${repository.id}")
                     },
