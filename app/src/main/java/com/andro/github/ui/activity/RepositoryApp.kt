@@ -47,7 +47,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
 import com.andro.github.app.AppConfig
+import com.andro.github.data.GitHubUser
 import com.andro.github.data.Repository
 import com.andro.github.ui.screens.LoginScreen
 import com.andro.github.ui.screens.RepoListErrorScreen
@@ -68,13 +70,14 @@ fun RepositoryApp(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val language by viewModel.language.collectAsState()
+    val user by viewModel.githubUser.collectAsState()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     val navController = rememberNavController()
     val drawerContent: @Composable () -> Unit = {
-        DrawerContent(navController) { scope.launch { drawerState.close() } }
+        DrawerContent(navController, user) { scope.launch { drawerState.close() } }
     }
 
     LaunchedEffect(Unit) {
@@ -200,6 +203,7 @@ private fun AppNavigation(
 @Composable
 fun DrawerContent(
     navController: NavController,
+    user: GitHubUser?,
     closeDrawer: () -> Unit = {},
 ) {
     val backgroundColor = MaterialTheme.colorScheme.primary
@@ -231,19 +235,27 @@ fun DrawerContent(
                         },
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Default Avatar",
-                    tint = Color.White,
-                    modifier = Modifier.size(60.dp),
-                )
+                if (user != null) {
+                    AsyncImage(
+                        model = user.avatarUrl,
+                        contentDescription = "User Avatar",
+                        modifier = Modifier.size(80.dp),
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Default Avatar",
+                        tint = Color.White,
+                        modifier = Modifier.size(80.dp),
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "点击头像登录",
-                style = MaterialTheme.typography.bodySmall,
+                text = user?.login ?: "点击头像登录",
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
 

@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.andro.github.app.AppConfig
 import com.andro.github.common.CoroutineScopeProvider
+import com.andro.github.data.GitHubUser
 import com.andro.github.data.Repository
 import com.andro.github.domain.GetGitHubUseInfoCase
 import com.andro.github.domain.GetRepositoriesUseCase
@@ -44,6 +45,9 @@ class GitHubViewModel
         // for repo order
         private val _isDescending = mutableStateOf(true)
         val isDescending = _isDescending
+
+        private val _githubUser = MutableStateFlow<GitHubUser?>(null)
+        val githubUser: StateFlow<GitHubUser?> = _githubUser
 
         fun fetchRepositories() {
             resetListState()
@@ -93,7 +97,13 @@ class GitHubViewModel
 
         fun fetchGithubUserInfo(code: String) {
             scope.launch {
-                getGitHubUseInfoCase.execute(code)
+                getGitHubUseInfoCase
+                    .execute(code)
+                    .onSuccess { user ->
+                        _githubUser.value = user
+                    }.onFailure {
+                        _githubUser.value = null
+                    }
             }
         }
     }
