@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.andro.github.app.AppConfig
 import com.andro.github.common.CoroutineScopeProvider
 import com.andro.github.data.Repository
+import com.andro.github.domain.GetGitHubUseInfoCase
 import com.andro.github.domain.GetRepositoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ class GitHubViewModel
     @Inject
     constructor(
         private val getRepositoriesUseCase: GetRepositoriesUseCase,
+        private val getGitHubUseInfoCase: GetGitHubUseInfoCase,
         private val scopeProvider: CoroutineScopeProvider,
     ) : ViewModel() {
         companion object {
@@ -86,6 +88,12 @@ class GitHubViewModel
                 }
             } else {
                 return emptyList()
+            }
+        }
+
+        fun fetchGithubUserInfo(code: String) {
+            scope.launch {
+                getGitHubUseInfoCase.execute(code)
             }
         }
     }

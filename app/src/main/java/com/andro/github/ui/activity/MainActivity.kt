@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
     private fun handleGitHubCallback(intent: Intent?) {
         val uri = intent?.data ?: return
         val code = uri.getQueryParameter("code") ?: return
-        Log.e(TAG, "code: $code")
+        Log.d(TAG, "code: $code")
+        viewModel.fetchGithubUserInfo(code)
     }
 }
