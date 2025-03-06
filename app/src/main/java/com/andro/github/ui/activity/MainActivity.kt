@@ -57,15 +57,11 @@ class MainActivity : ComponentActivity() {
         handleGitHubCallback(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        handleGitHubCallback(intent)
-    }
-
     private fun handleGitHubCallback(intent: Intent?) {
         val uri = intent?.data ?: return
         val code = uri.getQueryParameter("code") ?: return
         Log.d(TAG, "code: $code")
+        intent.removeExtra("code")
         viewModel.fetchGithubUserInfo(code)
     }
 }

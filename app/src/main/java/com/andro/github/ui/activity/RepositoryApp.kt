@@ -147,6 +147,7 @@ private fun AppNavigation(
 
         composable(AppConfig.ROUTER_LOGIN) {
             LoginScreen(onLogin) {
+                navController.popBackStack()
                 onOAuthLogin()
             }
         }
