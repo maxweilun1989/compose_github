@@ -237,6 +237,9 @@ fun DrawerContent(
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
                         .clickable {
+                            if (user != null) {
+                                return@clickable
+                            }
                             closeDrawer()
                             navController.navigate(AppConfig.ROUTER_LOGIN)
                         },
@@ -280,6 +283,9 @@ fun DrawerContent(
                     label = "关于",
                     onClick = {
                         closeDrawer()
+                        if (navController.currentDestination?.route == AppConfig.ROUTER_PROFILE) {
+                            return@DrawerOption
+                        }
                         navController.navigate(AppConfig.ROUTER_PROFILE)
                     },
                 )
