@@ -25,6 +25,8 @@ class AccountRepositoryImpl
 
         override suspend fun getUserInfo(accessToken: String): GitHubUser = githubAPiService.getUserInfo("Bearer $accessToken")
 
+        override suspend fun getUserRepos(accessToken: String): List<Repository> = githubAPiService.fetchOwnRepos("Bearer $accessToken")
+
         override fun saveAccessToken(accessToken: String) {
             sharedPreferences
                 .edit()

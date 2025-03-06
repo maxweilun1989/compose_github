@@ -3,6 +3,7 @@ package com.andro.github.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -29,10 +33,14 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.andro.github.data.GitHubUser
+import com.andro.github.data.Repository
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
-fun ProfileScreen(user: GitHubUser?) {
+fun ProfileScreen(
+    user: GitHubUser?,
+    repos: List<Repository>,
+) {
     if (user == null) {
         Column(
             modifier =
@@ -104,6 +112,17 @@ fun ProfileScreen(user: GitHubUser?) {
         InfoCard(label = "Email", value = user.email ?: "Not Available")
         Spacer(modifier = Modifier.height(8.dp))
         InfoCard(label = "Location", value = user.location ?: "Not Available")
+        Spacer(modifier = Modifier.height(8.dp))
+
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(repos) { repo ->
+                RepoCard(repo = repo)
+            }
+        }
     }
 }
 
@@ -140,6 +159,40 @@ fun InfoCard(
                 textAlign = TextAlign.End,
                 modifier = Modifier.weight(2f),
             )
+        }
+    }
+}
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+fun RepoCard(repo: Repository) {
+    Card(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(4.dp),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+        ) {
+            Text(
+                text = repo.name,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            )
+            if (!repo.description.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = repo.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

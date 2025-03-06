@@ -2,6 +2,7 @@ package com.andro.github.common
 
 import com.andro.github.data.AccountRepository
 import com.andro.github.data.GitHubUser
+import com.andro.github.data.Repository
 
 class FakeAccountRepo : AccountRepository {
     override suspend fun getAccessToken(code: String): String = ""
@@ -16,6 +17,8 @@ class FakeAccountRepo : AccountRepository {
             email = "xxx@gmail.com",
             location = "Wuhan",
         )
+
+    override suspend fun getUserRepos(accessToken: String): List<Repository> = emptyList()
 
     override fun saveAccessToken(accessToken: String) {
     }

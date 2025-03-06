@@ -1,6 +1,7 @@
 package com.andro.github.network
 
 import com.andro.github.data.GitHubUser
+import com.andro.github.data.Repository
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
@@ -20,4 +21,9 @@ interface GitHubApiService {
     suspend fun getUserInfo(
         @Header("Authorization") authorization: String,
     ): GitHubUser
+
+    @GET("user/repos")
+    suspend fun fetchOwnRepos(
+        @Header("Authorization") authorization: String,
+    ): List<Repository>
 }

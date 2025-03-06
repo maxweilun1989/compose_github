@@ -5,6 +5,8 @@ interface AccountRepository {
 
     suspend fun getUserInfo(accessToken: String): GitHubUser
 
+    suspend fun getUserRepos(accessToken: String): List<Repository>
+
     fun saveAccessToken(accessToken: String)
 
     fun getSavedAccessToken(): String?

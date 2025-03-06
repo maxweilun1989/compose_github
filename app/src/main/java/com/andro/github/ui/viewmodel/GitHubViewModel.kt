@@ -51,6 +51,9 @@ class GitHubViewModel
         private val _githubUser = MutableStateFlow<GitHubUser?>(null)
         val githubUser: StateFlow<GitHubUser?> = _githubUser
 
+        private val _currentUserRepos = MutableStateFlow<List<Repository>>(emptyList())
+        val currentUserRepos: StateFlow<List<Repository>> = _currentUserRepos
+
         fun fetchLoginState() {
             scope.launch {
                 val accessToken = accountRepository.getSavedAccessToken()
@@ -131,6 +134,21 @@ class GitHubViewModel
             scope.launch {
                 accountRepository.removeSavedAccessToken()
                 _githubUser.value = null
+            }
+        }
+
+        fun fetchOwnRepos() {
+            scope.launch {
+                val token = accountRepository.getSavedAccessToken()
+                if (token.isNullOrBlank()) {
+                    Log.e(TAG, "fetchOwnRepos: Access token is null or blank")
+                    return@launch
+                }
+                runCatching {
+                    _currentUserRepos.value = accountRepository.getUserRepos(token)
+                }.onFailure {
+                    _currentUserRepos.value = emptyList()
+                }
             }
         }
     }

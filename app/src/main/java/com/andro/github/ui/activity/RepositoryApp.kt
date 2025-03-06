@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Divider
@@ -44,7 +43,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -75,15 +73,20 @@ fun RepositoryApp(
     val uiState by viewModel.uiState.collectAsState()
     val language by viewModel.language.collectAsState()
     val user by viewModel.githubUser.collectAsState()
+    val currentUserRepos by viewModel.currentUserRepos.collectAsState()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     val navController = rememberNavController()
     val drawerContent: @Composable () -> Unit = {
-        DrawerContent(navController, user, { scope.launch { drawerState.close() } }) {
-            viewModel.logout()
-        }
+        DrawerContent(
+            navController = navController,
+            user = user,
+            closeDrawer = { scope.launch { drawerState.close() } },
+            onLogoutClick = { viewModel.logout() },
+            onProfilePageShow = { viewModel.fetchOwnRepos() },
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -118,6 +121,7 @@ fun RepositoryApp(
                 viewModel,
                 language,
                 user,
+                currentUserRepos,
                 padding,
                 onOAuthLogin,
                 onLogin,
@@ -134,6 +138,7 @@ private fun AppNavigation(
     viewModel: GitHubViewModel,
     language: String,
     user: GitHubUser?,
+    currentUserRepos: List<Repository>,
     padding: PaddingValues,
     onOAuthLogin: () -> Unit,
     onLogin: (String, String) -> Unit,
@@ -165,7 +170,7 @@ private fun AppNavigation(
         }
 
         composable(AppConfig.ROUTER_PROFILE) {
-            ProfileScreen(user)
+            ProfileScreen(user, currentUserRepos)
         }
 
         composable(AppConfig.ROUTE_REPOSITORY_LIST) {
@@ -219,6 +224,7 @@ fun DrawerContent(
     user: GitHubUser?,
     closeDrawer: () -> Unit,
     onLogoutClick: () -> Unit,
+    onProfilePageShow: () -> Unit,
 ) {
     val backgroundColor = MaterialTheme.colorScheme.primary
 
@@ -294,6 +300,7 @@ fun DrawerContent(
                             return@DrawerOption
                         }
                         navController.navigate(AppConfig.ROUTER_PROFILE)
+                        onProfilePageShow()
                     },
                 )
 
