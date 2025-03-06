@@ -1,8 +1,10 @@
 # compose_github
 
-# Feature
+# Demo And APK
 https://www.bilibili.com/video/BV1g3RNYVErm/?vd_source=c1787d85bea9b3113f619d0d7a011cef
+https://github.com/maxweilun1989/compose_github/blob/main/app/release/app-release.apk
 
+# Feature
 ## Suported
 1. Browse the most 10 popular repositories of specific programming langugae.
 2. Change programming language and sort repositories by its stars.
