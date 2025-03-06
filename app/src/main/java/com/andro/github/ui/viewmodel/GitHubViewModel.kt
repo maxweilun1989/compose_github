@@ -1,5 +1,6 @@
 package com.andro.github.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,10 @@ class GitHubViewModel
         private val getRepositoriesUseCase: GetRepositoriesUseCase,
         private val scopeProvider: CoroutineScopeProvider,
     ) : ViewModel() {
+        companion object {
+            const val TAG = "[GitHubViewModel]"
+        }
+
         private val scope = scopeProvider.getScope(this)
 
         private val _uiState =
@@ -33,6 +38,10 @@ class GitHubViewModel
 
         // for lazyColumn scroll position
         var llState: LazyListState by mutableStateOf(LazyListState(0, 0))
+
+        // for repo order
+        private val _isDescending = mutableStateOf(true)
+        val isDescending = _isDescending
 
         fun fetchRepositories() {
             resetListState()
@@ -57,5 +66,26 @@ class GitHubViewModel
 
         private fun resetListState() {
             llState = LazyListState(0, 0)
+        }
+
+        fun toggleSortOrder() {
+            if (_uiState.value !is RepositoryListUiState.Success) {
+                Log.e(TAG, "toggleSortOrder: UI state is not Success")
+                return
+            }
+            _isDescending.value = !_isDescending.value
+        }
+
+        fun repositories(): List<Repository> {
+            if (_uiState.value is RepositoryListUiState.Success) {
+                val repos = (_uiState.value as RepositoryListUiState.Success).data
+                return if (_isDescending.value) {
+                    repos.sortedByDescending { it.stars }
+                } else {
+                    repos.sortedBy { it.stars }
+                }
+            } else {
+                return emptyList()
+            }
         }
     }

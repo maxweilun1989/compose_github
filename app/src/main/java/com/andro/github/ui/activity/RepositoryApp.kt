@@ -135,15 +135,17 @@ private fun AppNavigation(
             val success = uiState as? RepositoryListUiState.Success
             if (success != null) {
                 RepositoryListScreen(
-                    repositories = success.data,
+                    repositories = viewModel.repositories(),
                     language = language,
                     listState = viewModel.llState,
+                    viewModel.isDescending.value,
                     onLanguageChange = { newLanguage ->
                         viewModel.setLanguage(newLanguage)
                     },
                     onRepositoryClick = { repository ->
                         navController.navigate("repository_detail/${repository.id}")
                     },
+                    onSortClick = { viewModel.toggleSortOrder() },
                 )
             }
         }
