@@ -125,7 +125,7 @@ fun RepositoryDetailScreen(repository: Repository) {
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
             ) {
                 repository.topics.forEach { topic ->
                     Chip(text = topic)

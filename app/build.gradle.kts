@@ -60,7 +60,7 @@ dependencies {
 
     // for hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    kapt(libs.hilt.android.compiler)
 
     // for network and json
     implementation(libs.retrofit2)
@@ -74,6 +74,9 @@ dependencies {
     implementation(libs.coil.okhttp)
 
     testImplementation(libs.junit)
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    kaptTest(libs.hilt.android.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
