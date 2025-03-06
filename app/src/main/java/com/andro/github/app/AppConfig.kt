@@ -18,4 +18,10 @@ object AppConfig {
             "ruby",
             "swift",
         )
+
+    const val ROUTE_REPOSITORY_LIST = "repository_list"
+    const val ROUTER_LOADING = "loading"
+    const val ROUTER_ERROR = "error"
+    const val ROUTER_REPOSITORY_DETAIL = "repository_detail"
+    const val ROUTER_LOGIN = "login"
 }

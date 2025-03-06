@@ -50,6 +50,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.andro.github.app.AppConfig
 import com.andro.github.data.Repository
+import com.andro.github.ui.screens.LoginScreen
 import com.andro.github.ui.screens.RepoListErrorScreen
 import com.andro.github.ui.screens.RepoListLoadingScreen
 import com.andro.github.ui.screens.RepositoryDetailScreen
@@ -115,13 +116,13 @@ private fun AppNavigation(
     NavHost(
         modifier = Modifier.padding(padding),
         navController = navController,
-        startDestination = "loading",
+        startDestination = AppConfig.ROUTER_LOADING,
     ) {
-        composable("loading") {
+        composable(AppConfig.ROUTER_LOADING) {
             RepoListLoadingScreen()
         }
 
-        composable("error") {
+        composable(AppConfig.ROUTER_ERROR) {
             val error = uiState as? RepositoryListUiState.Error
             if (error != null) {
                 RepoListErrorScreen(
@@ -131,7 +132,12 @@ private fun AppNavigation(
             }
         }
 
-        composable("repository_list") {
+        composable(AppConfig.ROUTER_LOGIN) {
+            LoginScreen { name, password ->
+            }
+        }
+
+        composable(AppConfig.ROUTE_REPOSITORY_LIST) {
             val success = uiState as? RepositoryListUiState.Success
             if (success != null) {
                 RepositoryListScreen(
@@ -143,7 +149,7 @@ private fun AppNavigation(
                         viewModel.setLanguage(newLanguage)
                     },
                     onRepositoryClick = { repository ->
-                        navController.navigate("repository_detail/${repository.id}")
+                        navController.navigate("${AppConfig.ROUTER_REPOSITORY_DETAIL}/${repository.id}")
                     },
                     onSortClick = { viewModel.toggleSortOrder() },
                 )
@@ -151,7 +157,7 @@ private fun AppNavigation(
         }
 
         composable(
-            route = "repository_detail/{repositoryId}",
+            route = "${AppConfig.ROUTER_REPOSITORY_DETAIL}/{repositoryId}",
         ) { backStackEntry ->
             val repositoryId = backStackEntry.arguments?.getString("repositoryId")
             val repos = (uiState as RepositoryListUiState.Success).data
@@ -164,9 +170,9 @@ private fun AppNavigation(
 
     val destination =
         when (uiState) {
-            is RepositoryListUiState.Error -> "error"
-            RepositoryListUiState.Loading -> "loading"
-            is RepositoryListUiState.Success -> "repository_list"
+            is RepositoryListUiState.Error -> AppConfig.ROUTER_ERROR
+            RepositoryListUiState.Loading -> AppConfig.ROUTER_LOADING
+            is RepositoryListUiState.Success -> AppConfig.ROUTE_REPOSITORY_LIST
         }
     navController.navigate(destination) {
         popUpTo(navController.graph.id) {
@@ -205,8 +211,8 @@ fun DrawerContent(
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
                         .clickable {
-                            navController.navigate("login")
-                            closeDrawer
+                            closeDrawer()
+                            navController.navigate(AppConfig.ROUTER_LOGIN)
                         },
                 contentAlignment = Alignment.Center,
             ) {
