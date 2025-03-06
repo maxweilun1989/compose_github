@@ -1,6 +1,7 @@
 # compose_github
 
 # Feature
+https://www.bilibili.com/video/BV1g3RNYVErm/?vd_source=c1787d85bea9b3113f619d0d7a011cef
 
 ## Suported
 1. Browse the most 10 popular repositories of specific programming langugae.
@@ -13,8 +14,15 @@
 
 ## Not Supported yet.
 1. Raise issues for authentical user(need list all the repos in the profile page, and another screen to fill the issue info)
+2. Repo List page should supprt load more.
+3. Repo list page should support pull down to refresh.
 
-## Backlog
+
+# Some Teck debts.
+1. Should not store APPID and APP_SECRET in source code. Maybe should try [keystore](https://developer.android.com/privacy-and-security/keystore).
+2. ViewModel should not contains too much business logic. Move it into Domain or Data Layer.
+3. Should not pass ViewModel or Navigator to inner Compose Component. If the cmoponent want to interact with ViewModel or Navigation, using callback. or try other data store pattern like redux in react.
+4. Should import the coverate of unit test and intrumented test, Not really driven by test, need improve.
 
 # Tech Stacks 
 
