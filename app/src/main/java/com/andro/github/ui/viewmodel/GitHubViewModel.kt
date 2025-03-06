@@ -126,4 +126,11 @@ class GitHubViewModel
                     }
             }
         }
+
+        fun logout() {
+            scope.launch {
+                accountRepository.removeSavedAccessToken()
+                _githubUser.value = null
+            }
+        }
     }

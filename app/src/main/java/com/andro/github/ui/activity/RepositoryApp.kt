@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Divider
@@ -42,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -78,7 +81,9 @@ fun RepositoryApp(
 
     val navController = rememberNavController()
     val drawerContent: @Composable () -> Unit = {
-        DrawerContent(navController, user) { scope.launch { drawerState.close() } }
+        DrawerContent(navController, user, { scope.launch { drawerState.close() } }) {
+            viewModel.logout()
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -212,7 +217,8 @@ private fun AppNavigation(
 fun DrawerContent(
     navController: NavController,
     user: GitHubUser?,
-    closeDrawer: () -> Unit = {},
+    closeDrawer: () -> Unit,
+    onLogoutClick: () -> Unit,
 ) {
     val backgroundColor = MaterialTheme.colorScheme.primary
 
@@ -288,6 +294,14 @@ fun DrawerContent(
                             return@DrawerOption
                         }
                         navController.navigate(AppConfig.ROUTER_PROFILE)
+                    },
+                )
+
+                DrawerOption(
+                    icon = Icons.AutoMirrored.Filled.Logout,
+                    label = "退出",
+                    onClick = {
+                        onLogoutClick()
                     },
                 )
             }
