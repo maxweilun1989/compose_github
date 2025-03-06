@@ -15,7 +15,8 @@ https://www.bilibili.com/video/BV1g3RNYVErm/?vd_source=c1787d85bea9b3113f619d0d7
 ## Not Supported yet.
 1. Raise issues for authentical user(need list all the repos in the profile page, and another screen to fill the issue info)
 2. Repo List page should supprt load more.
-3. Repo list page should support pull down to refresh.
+3. Fetch all the supported lanuages from github server, not hardcoded.
+4. Repo list page should support pull down to refresh.
 
 
 # Some Teck debts.
