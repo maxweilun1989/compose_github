@@ -1,5 +1,6 @@
 package com.andro.github
 
+import app.cash.turbine.test
 import com.andro.github.common.TestCoroutineScopeProvider
 import com.andro.github.di.FakeGetReposErrorUserCase
 import com.andro.github.ui.viewmodel.GitHubViewModel
@@ -23,8 +24,38 @@ class GitHubViewModelTest {
     }
 
     @Test
+    fun `fetchRepositories returns loading state first when success`(): Unit =
+        testCoroutineScopeProvider.getTestScope().runTest {
+            viewModel.uiState.test {
+                fakeUseCase.setReturnError(false)
+                viewModel.fetchRepositories("Kotlin")
+
+                assertTrue(awaitItem() is RepositoryListUiState.Loading)
+
+                val nextState = awaitItem()
+                assertTrue(nextState is RepositoryListUiState.Success)
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `fetchRepositories returns loading state first when error`(): Unit =
+        testCoroutineScopeProvider.getTestScope().runTest {
+            viewModel.uiState.test {
+                fakeUseCase.setReturnError(true)
+                viewModel.fetchRepositories("Kotlin")
+
+                assertTrue(awaitItem() is RepositoryListUiState.Loading)
+
+                val nextState = awaitItem()
+                assertTrue(nextState is RepositoryListUiState.Error)
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+    @Test
     fun `fetchRepositories returns success`(): Unit =
-        runTest {
+        testCoroutineScopeProvider.getTestScope().runTest {
             fakeUseCase.setReturnError(false)
             viewModel.fetchRepositories("Kotlin")
 
@@ -45,7 +76,7 @@ class GitHubViewModelTest {
 
     @Test
     fun `fetchRepositories returns error`(): Unit =
-        runTest {
+        testCoroutineScopeProvider.getTestScope().runTest {
             fakeUseCase.setReturnError(true)
 
             viewModel.fetchRepositories("Kotlin")

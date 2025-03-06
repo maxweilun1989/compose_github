@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.coil.okhttp)
 
     testImplementation(libs.junit)
+    testImplementation(libs.turbine)
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.kotlinx.coroutines.test)
     kaptTest(libs.hilt.android.compiler)
