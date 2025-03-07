@@ -211,7 +211,8 @@ private fun AppNavigation(
             AppConfig.ROUTER_LOADING,
             AppConfig.ROUTER_ERROR,
             AppConfig.ROUTE_REPOSITORY_LIST,
-        )
+        ) ||
+        (navController.currentDestination?.route == AppConfig.ROUTER_PROFILE && user == null)
     ) {
         val destination =
             when (uiState) {
