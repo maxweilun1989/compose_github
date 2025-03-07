@@ -1,7 +1,7 @@
 # compose_github
 
 # Demo And APK
-https://www.bilibili.com/video/BV1g3RNYVErm/?vd_source=c1787d85bea9b3113f619d0d7a011cef
+https://www.bilibili.com/video/BV1vw9yYZECy/?vd_source=c1787d85bea9b3113f619d0d7a011cef
 https://github.com/maxweilun1989/compose_github/blob/main/app/release/app-release.apk
 
 # Feature
@@ -30,6 +30,7 @@ Basically, we adapte the architecture that google recommended. [Layer Architectu
 2. ViewModel should not contains too much business logic. Move it into Domain or Data Layer.
 3. Should not pass ViewModel or Navigator to inner Compose Component. If the cmoponent want to interact with ViewModel or Navigation, using callback. or try other data store pattern like redux in react.
 4. Should import the coverate of unit test and intrumented test, Not really driven by test, need improve.
+5. Big compose compoennt, need to make it smaller.
 
 # Tech Stacks 
 
